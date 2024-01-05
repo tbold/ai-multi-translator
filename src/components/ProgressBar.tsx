@@ -1,4 +1,4 @@
-import { LinearProgress } from "@mui/material";
+import { Box, LinearProgress, Typography } from "@mui/material";
 import React from "react";
 
 interface ProgressBarProps {
@@ -9,6 +9,17 @@ interface ProgressBarProps {
 export default function ProgressBar({ text, percentage }: ProgressBarProps) {
   percentage = percentage ?? 0;
   return (
-    <LinearProgress variant="determinate" value={percentage} />
+    <>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: '100%', mr: 1 }}>
+          <LinearProgress variant="determinate" value={percentage} />
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+          <Typography variant="body2" color="text.secondary">{`${Math.round(
+            percentage
+          )}%`}</Typography>
+        </Box>
+      </Box>
+    </>
   );
 }

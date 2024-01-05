@@ -70,13 +70,16 @@ function App() {
         case 'update':
           // Generation update: update the output text.
           const outputCopy = [...output];
-          console.log(e.data);
           outputCopy[e.data.result.index] = e.data.result.output;
           setOutput(outputCopy);
           break;
 
         case 'complete':
-          // Generation complete: re-enable the "Translate" button
+          const outputCopy2 = [...output];
+          e.data.result.forEach((x: any) => {
+            outputCopy2[x.index] = x.output;
+          })
+          setOutput(outputCopy2);
           setDisabled(false);
           break;
       }
@@ -91,13 +94,16 @@ function App() {
 
   const translate = () => {
     setDisabled(true);
-    outputLanguages.forEach((x, index) => {
-      worker.current!.postMessage({
+    var map = outputLanguages.map((x, index) => {
+      return {
         index,
-        text: input,
-        src_lang: sourceLanguage,
-        tgt_lang: x.languageCode,
-      });
+        languageCode: x.languageCode
+      }
+    });
+    worker.current?.postMessage({
+      text: input,
+      sourceLanguage: sourceLanguage,
+      outputLanguages: map
     });
   }
 
@@ -125,6 +131,7 @@ function App() {
       return <div key={index}>
         <Box sx={{ p: 1 }} />
         <Dropdown
+          disabled={disabled}
           key={index}
           label="Output language"
           languageCode={x.languageCode} defaultLanguage="fra_Latn" onChange={y => updateTargetLanguage(index, y.target.value)} />
@@ -132,7 +139,7 @@ function App() {
           readOnly: true,
         }}></TextField>
         {index != 0 &&
-          (<IconButton onClick={() => deleteLanguage(index)}>
+          (<IconButton disabled={disabled} onClick={() => deleteLanguage(index)}>
             <DeleteIcon />
           </IconButton>
           )}
@@ -142,38 +149,41 @@ function App() {
   }
 
   return (
-    <>
-      <h2 >Multi-translator</h2>
-      <div>
-        <Dropdown
-          label="Source language"
-          languageCode={sourceLanguage} defaultLanguage="eng_Latn" onChange={x => setSourceLanguage(x.target.value)} />
-        <TextField value={input} rows={3} onChange={e => setInput(e.target.value)}></TextField>
-      </div>
-      {buildOutputLanguages()}
-      <Box sx={{ p: 1 }} />
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div >
+        <h2 >Multi-translator</h2>
+        <div>
+          <Dropdown
+            disabled={disabled}
+            label="Source language"
+            languageCode={sourceLanguage} defaultLanguage="eng_Latn" onChange={x => setSourceLanguage(x.target.value)} />
+          <TextField disabled={disabled} value={input} rows={3} onChange={e => setInput(e.target.value)}></TextField>
+        </div>
+        {buildOutputLanguages()}
+        <Box sx={{ p: 1 }} />
 
-      <div>
-        <Button
-          variant='outlined'
-          onClick={addLanguage}
-          disabled={disabled}>
-          Add language
-        </Button>
-      </div>
-      <Box sx={{ p: 1 }} />
+        <div>
+          <Button
+            variant='outlined'
+            onClick={addLanguage}
+            disabled={disabled}>
+            Add language
+          </Button>
+        </div>
+        <Box sx={{ p: 1 }} />
 
-      <Button variant='contained' disabled={disabled} onClick={translate}>Translate</Button>
+        <Button variant='contained' disabled={disabled} onClick={translate}>Translate</Button>
 
-      <div className='progress-bars-container'>
-        {ready === false && (
-          <label>Loading models... (only run once)</label>
-        )}
-        {progressItems.map((data, index) => (
-          <ProgressBar key={index} text={data.file} percentage={data.progress} />
-        ))}
+        <div className='progress-bars-container'>
+          {ready === false && (
+            <label>Loading models... (only run once)</label>
+          )}
+          {progressItems.map((data, index) => (
+            <ProgressBar key={index} text={data.file} percentage={data.progress} />
+          ))}
+        </div>
       </div>
-    </>
+    </div>
   )
 }
 

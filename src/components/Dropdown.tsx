@@ -7,6 +7,7 @@ interface DropdownProps {
   onChange(event: SelectChangeEvent): void;
   defaultLanguage: string;
   label: string;
+  disabled: boolean;
 }
 
 export default function Dropdown({
@@ -14,6 +15,7 @@ export default function Dropdown({
   onChange,
   defaultLanguage,
   label,
+  disabled
 }: DropdownProps) {
 
   return (
@@ -23,6 +25,7 @@ export default function Dropdown({
         label={label}
         value={languageCode}
         defaultValue={defaultLanguage}
+        disabled={disabled}
       >
         {LANGUAGES.map((value, index) =>
           <MenuItem key={index} value={value.languageCode} > {value.friendlyName} </MenuItem>

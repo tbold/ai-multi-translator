@@ -29,26 +29,22 @@ self.addEventListener('message', async (event) => {
     self.postMessage(x);
   });
 
-  // Actually perform the translation
-  let output = await translator(event.data.text, {
-    tgt_lang: event.data.tgt_lang,
-    src_lang: event.data.src_lang,
-
-    // Allows for partial output
-    callback_function: (x) => {
-      self.postMessage({
-        status: 'update',
-        result: {
-          index: event.data.index,
-          output: translator.tokenizer.decode(x[0].output_token_ids, { skip_special_tokens: true })
-        }
-      });
-    }
-  });
-
-  // Send the output back to the main thread
-  self.postMessage({
-    status: 'complete',
-    result: { index: event.data.index, output },
-  });
+  Promise.all(event.data.outputLanguages.map((x) =>
+    translator(event.data.text, {
+      tgt_lang: x.languageCode,
+      src_lang: event.data.sourceLanguage
+    })
+  )).then(allData => {
+    // Send the output back to the main thread
+    var output = allData.map(((x, index) => {
+      return {
+        index,
+        output: x[0].translation_text,
+      }
+    }))
+    self.postMessage({
+      status: 'complete',
+      result: output,
+    });
+  })
 });
