@@ -32,7 +32,16 @@ self.addEventListener('message', async (event) => {
   Promise.all(event.data.outputLanguages.map((x) =>
     translator(event.data.text, {
       tgt_lang: x.languageCode,
-      src_lang: event.data.sourceLanguage
+      src_lang: event.data.sourceLanguage,
+      callback_function: y => {
+        self.postMessage({
+          status: 'update',
+          result: {
+            index: x.index,
+            output: translator.tokenizer.decode(y[0].output_token_ids, { skip_special_tokens: true })
+          }
+        });
+      }
     })
   )).then(allData => {
     // Send the output back to the main thread

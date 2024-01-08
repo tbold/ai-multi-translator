@@ -2,17 +2,17 @@
 import { useEffect, useRef, useState } from 'react'
 import Dropdown from '../components/Dropdown';
 import ProgressBar from '../components/ProgressBar';
-import DeleteIcon from '@mui/icons-material/Delete';
 import React from 'react';
-import { Box, Button, IconButton, TextField } from '@mui/material';
+import { Box, Button, Divider, Grid, Paper, TextField, Typography } from '@mui/material';
 import { OutputLanguage } from '../structs';
+import Language from '@/components/Language';
 
 function App() {
-
   // Model loading
   const [ready, setReady] = useState<boolean | null>(null);
   const [disabled, setDisabled] = useState(false);
-  const [progressItems, setProgressItems] = useState<any[]>([]);
+  const [progressItems, setProgressItems] = useState<any[]>([
+  ]);
 
   // Inputs and outputs
   const [input, setInput] = useState('I love coding.');
@@ -128,62 +128,61 @@ function App() {
 
   function buildOutputLanguages(): React.JSX.Element[] {
     return outputLanguages.map((x, index) => {
-      return <div key={index}>
-        <Box sx={{ p: 1 }} />
-        <Dropdown
-          disabled={disabled}
-          key={index}
-          label="Output language"
-          languageCode={x.languageCode} defaultLanguage="fra_Latn" onChange={y => updateTargetLanguage(index, y.target.value)} />
-        <TextField value={output[index]} rows={3} InputProps={{
-          readOnly: true,
-        }}></TextField>
-        {index != 0 &&
-          (<IconButton disabled={disabled} onClick={() => deleteLanguage(index)}>
-            <DeleteIcon />
-          </IconButton>
-          )}
-      </div>
+      return (
+        <Language languageCode={x.languageCode} key={index} index={index} disabled={disabled} onDelete={deleteLanguage} onChange={updateTargetLanguage} output={output[index]} />
+      )
     })
-
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <div >
-        <h2 >Multi-translator</h2>
-        <div>
-          <Dropdown
-            disabled={disabled}
-            label="Source language"
-            languageCode={sourceLanguage} defaultLanguage="eng_Latn" onChange={x => setSourceLanguage(x.target.value)} />
-          <TextField disabled={disabled} value={input} rows={3} onChange={e => setInput(e.target.value)}></TextField>
-        </div>
-        {buildOutputLanguages()}
-        <Box sx={{ p: 1 }} />
-
-        <div>
-          <Button
-            variant='outlined'
-            onClick={addLanguage}
-            disabled={disabled}>
-            Add language
-          </Button>
-        </div>
-        <Box sx={{ p: 1 }} />
-
-        <Button variant='contained' disabled={disabled} onClick={translate}>Translate</Button>
-
-        <div className='progress-bars-container'>
-          {ready === false && (
-            <label>Loading models... (only run once)</label>
-          )}
-          {progressItems.map((data, index) => (
-            <ProgressBar key={index} text={data.file} percentage={data.progress} />
-          ))}
-        </div>
-      </div>
-    </div>
+    <Paper elevation={3}>
+      <Grid container direction="row" alignItems="center">
+        <Grid item xs={2} />
+        <Grid item xs={8}>
+          <Box sx={{ p: 2 }} alignItems="center">
+            <Typography align='center' variant="h4">Title</Typography>
+          </Box>
+          <Grid container direction="row" spacing={1} sx={{ p: 2 }} >
+            <Grid item >
+              <Dropdown
+                disabled={disabled}
+                label="Source language"
+                languageCode={sourceLanguage} defaultLanguage="eng_Latn" onChange={x => setSourceLanguage(x.target.value)} />
+            </Grid>
+            <Grid item width="70%">
+              <TextField fullWidth disabled={disabled} value={input} multiline onChange={e => setInput(e.target.value)}></TextField>
+            </Grid>
+          </Grid>
+          <Divider />
+          {buildOutputLanguages()}
+          <Divider />
+          <Grid container direction="row" spacing={1} sx={{ p: 2 }}>
+            <Grid item>
+              <Button
+                variant='outlined'
+                onClick={addLanguage}
+                disabled={disabled}>
+                Add language
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button variant='contained' disabled={disabled} onClick={translate}>Translate</Button>
+            </Grid>
+          </Grid>
+          <Grid container direction="column" spacing={1} sx={{ p: 2 }} alignItems="center">
+            {ready == false && <Grid item>
+              <Typography>Loading models... (only run once)</Typography>
+            </Grid>}
+            {progressItems.map((data, index) => (
+              <Grid item key={index} sx={{ p: 1 }} >
+                <ProgressBar text={data.file} percentage={data.progress} />
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+        <Grid item xs={2} />
+      </Grid>
+    </Paper >
   )
 }
 
