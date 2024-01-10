@@ -1,4 +1,4 @@
-Simple AI multi-language translator built with next.js. It uses a pre-trained language model hosted by [hugging](https://huggingface.co/) which invokes the model in-browser instead of relying on an external AI service.
+Simple AI multi-language translator built with next.js. It uses a pre-trained language model hosted by [huggingface](https://huggingface.co/) which invokes the model in-browser instead of relying on an external AI service.
 
 ## Demo
 [https://huggingface.co/spaces/tbold/ai-multi-translator
