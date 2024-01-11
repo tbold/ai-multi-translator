@@ -27,7 +27,7 @@ export default function Language({
           disabled={disabled}
           key={index}
           label="Output"
-          languageCode={languageCode} defaultLanguage="fra_Latn" onChange={y => onChange(index, y.target.value)} />
+          languageCode={languageCode} defaultLanguage="fra_Latn" onChange={(y: string) => onChange(index, y)} />
       </Grid>
       <Grid item width="70%">
         <TextField multiline fullWidth value={output} InputProps={{

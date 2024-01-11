@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from 'react'
 import Dropdown from '../components/Dropdown';
 import ProgressBar from '../components/ProgressBar';
 import React from 'react';
-import { Box, Button, Divider, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
 import { OutputLanguage } from '../structs';
 import Language from '@/components/Language';
+import TranslateIcon from '@mui/icons-material/Translate';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
-function App() {
+export function App() {
   // Model loading
   const [ready, setReady] = useState<boolean | null>(null);
   const [disabled, setDisabled] = useState(false);
@@ -117,6 +119,9 @@ function App() {
     const languagesCopy = [...outputLanguages];
     languagesCopy.splice(index, 1);
     setOutputLanguages(languagesCopy);
+    const outputCopy = [...output];
+    outputCopy.splice(index, 1);
+    setOutput(outputCopy);
   }
 
   function updateTargetLanguage(index: number, languageCode: string) {
@@ -129,7 +134,7 @@ function App() {
   function buildOutputLanguages(): React.JSX.Element[] {
     return outputLanguages.map((x, index) => {
       return (
-        <Language languageCode={x.languageCode} key={index} index={index} disabled={disabled} onDelete={deleteLanguage} onChange={updateTargetLanguage} output={output[index]} />
+        <Language languageCode={x.languageCode} key={index} index={index} disabled={disabled} onDelete={deleteLanguage} onChange={updateTargetLanguage} output={output[index] ?? ''} />
       )
     })
   }
@@ -140,17 +145,28 @@ function App() {
         <Grid item xs={2} />
         <Grid item xs={8}>
           <Box sx={{ p: 2 }} alignItems="center">
-            <Typography align='center' variant="h4">Title</Typography>
+            <Stack direction="row" spacing={{ p: 1 }}>
+              <TranslateIcon color="primary" fontSize='large' />
+              <Box sx={{ p: 2 }} />
+              <Typography align='center' variant="h4">AI multi-translator</Typography>
+            </Stack>
+            <Typography variant="body2">Simple translator that uses a pre-trained machine learning model to translate text into multiple languages.</Typography>
+            <Typography variant="body2">The model runs in the browser and does not rely on an external AI provider.</Typography>
+            <Typography variant="body2">Build with next.js and hosted on Vercel.</Typography>
+            <IconButton size="large" href="https://github.com/tbold/ai-multi-translator" target='_blank' style={{ borderRadius: 8 }}>
+              <GitHubIcon />
+              <Typography variant='caption'>Source code</Typography>
+            </IconButton>
           </Box>
           <Grid container direction="row" spacing={1} sx={{ p: 2 }} >
             <Grid item >
               <Dropdown
                 disabled={disabled}
                 label="Source language"
-                languageCode={sourceLanguage} defaultLanguage="eng_Latn" onChange={x => setSourceLanguage(x.target.value)} />
+                languageCode={sourceLanguage} defaultLanguage="eng_Latn" onChange={(x: string) => setSourceLanguage(x)} />
             </Grid>
             <Grid item width="70%">
-              <TextField fullWidth disabled={disabled} value={input} multiline onChange={e => setInput(e.target.value)}></TextField>
+              <TextField fullWidth disabled={disabled} value={input} multiline onChange={(e: any) => setInput(e.target.value)}></TextField>
             </Grid>
           </Grid>
           <Divider />
