@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import Dropdown from '../components/Dropdown';
 import ProgressBar from '../components/ProgressBar';
 import React from 'react';
-import { Box, Button, Divider, Grid, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
+import { TextField } from '@mui/material';
 import { OutputLanguage } from '../structs';
 import Language from '@/components/Language';
 import TranslateIcon from '@mui/icons-material/Translate';
@@ -132,73 +132,144 @@ export function App() {
   }
 
   function buildOutputLanguages(): React.JSX.Element[] {
-    return outputLanguages.map((x, index) => {
-      return (
-        <Language languageCode={x.languageCode} key={index} index={index} disabled={disabled} onDelete={deleteLanguage} onChange={updateTargetLanguage} output={output[index] ?? ''} />
-      )
-    })
+    return outputLanguages.map((lang, index) => (
+      <div key={index} className="bg-white/20 rounded-2xl p-6 backdrop-blur-sm border border-white/20 animate-scale-in">
+        <Language 
+          languageCode={lang.languageCode} 
+          index={index} 
+          disabled={disabled} 
+          onDelete={deleteLanguage} 
+          onChange={updateTargetLanguage} 
+          output={output[index] ?? ''} 
+        />
+      </div>
+    ))
   }
 
   return (
-    <Paper elevation={3}>
-      <Grid container direction="row" alignItems="center">
-        <Grid item xs={2} />
-        <Grid item xs={8}>
-          <Box sx={{ p: 2 }} alignItems="center">
-            <Stack direction="row" spacing={{ p: 1 }}>
-              <TranslateIcon color="primary" fontSize='large' />
-              <Box sx={{ p: 2 }} />
-              <Typography align='center' variant="h4">AI multi-translator</Typography>
-            </Stack>
-            <Typography variant="body2">Simple translator that uses a pre-trained machine learning model to translate text into multiple languages.</Typography>
-            <Typography variant="body2">The model runs in the browser and does not rely on an external AI provider.</Typography>
-            <Typography variant="body2">Build with next.js and hosted on Vercel.</Typography>
-            <IconButton size="large" href="https://github.com/tbold/ai-multi-translator" target='_blank' style={{ borderRadius: 8 }}>
-              <GitHubIcon />
-              <Typography variant='caption'>Source code</Typography>
-            </IconButton>
-          </Box>
-          <Grid container direction="row" spacing={1} sx={{ p: 2 }} >
-            <Grid item >
-              <Dropdown
-                disabled={disabled}
-                label="Source language"
-                languageCode={sourceLanguage} defaultLanguage="eng_Latn" onChange={(x: string) => setSourceLanguage(x)} />
-            </Grid>
-            <Grid item width="70%">
-              <TextField fullWidth disabled={disabled} value={input} multiline onChange={(e: any) => setInput(e.target.value)}></TextField>
-            </Grid>
-          </Grid>
-          <Divider />
-          {buildOutputLanguages()}
-          <Divider />
-          <Grid container direction="row" spacing={1} sx={{ p: 2 }}>
-            <Grid item>
-              <Button
-                variant='outlined'
+    <div className="min-h-screen p-4 md:p-8 animate-fade-in">
+      <div className="max-w-6xl mx-auto">
+        <div className="glass-card rounded-3xl shadow-glass overflow-hidden animate-slide-up">
+          <div className="px-6 py-8 md:px-12 md:py-12 bg-gradient-to-r from-white/10 to-white/5">
+            <div className="text-center space-y-6">
+              <div className="flex items-center justify-center space-x-4">
+                <div className="p-3 rounded-2xl bg-gradient-modern">
+                  <TranslateIcon className="text-white" style={{ fontSize: '2.5rem' }} />
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold gradient-text">
+                  AI Multi-Translator
+                </h1>
+              </div>
+              
+              <div className="max-w-3xl mx-auto space-y-3 text-neutral-600">
+                <p className="text-lg md:text-xl leading-relaxed">
+                  Experience powerful AI translation supporting 200+ languages with complete privacy
+                </p>
+                <p className="text-base opacity-80">
+                  Built with cutting-edge machine learning models that run entirely in your browser
+                </p>
+                <p className="text-sm opacity-70">
+                  No data leaves your device • No API keys required • Completely offline-capable
+                </p>
+              </div>
+              
+              <a 
+                href="https://github.com/tbold/ai-multi-translator" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-2 px-6 py-3 bg-white/20 hover:bg-white/30 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-glow"
+              >
+                <GitHubIcon className="text-neutral-700" />
+                <span className="text-neutral-700 font-medium">View Source Code</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="px-6 md:px-12 pb-8">
+            <div className="mb-8">
+              <div className="bg-white/30 rounded-2xl p-6 backdrop-blur-sm border border-white/20">
+                <div className="flex flex-col md:flex-row gap-4 items-start">
+                  <div className="flex-shrink-0">
+                    <Dropdown
+                      disabled={disabled}
+                      label="Source language"
+                      languageCode={sourceLanguage} 
+                      defaultLanguage="eng_Latn" 
+                      onChange={(x: string) => setSourceLanguage(x)} 
+                    />
+                  </div>
+                  <div className="flex-grow">
+                    <TextField 
+                      fullWidth 
+                      disabled={disabled} 
+                      value={input} 
+                      multiline 
+                      rows={4}
+                      placeholder="Enter text to translate..."
+                      onChange={(e: any) => setInput(e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                          borderRadius: '12px',
+                          '&:hover': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-8">
+              {
+               buildOutputLanguages()
+              }
+            </div>
+
+            <div className="flex flex-wrap gap-4 justify-center mb-8">
+              <button
                 onClick={addLanguage}
-                disabled={disabled}>
-                Add language
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button variant='contained' disabled={disabled} onClick={translate}>Translate</Button>
-            </Grid>
-          </Grid>
-          <Grid container direction="column" spacing={1} sx={{ p: 2 }} alignItems="center">
-            {ready == false && <Grid item>
-              <Typography>Loading models... (only run once)</Typography>
-            </Grid>}
-            {progressItems.map((data, index) => (
-              <Grid item key={index} sx={{ p: 1 }} >
-                <ProgressBar text={data.file} percentage={data.progress} />
-              </Grid>
-            ))}
-          </Grid>
-        </Grid>
-        <Grid item xs={2} />
-      </Grid>
-    </Paper >
+                disabled={disabled}
+                className="px-6 py-3 bg-white/20 hover:bg-white/30 disabled:bg-white/10 disabled:opacity-50 rounded-xl font-medium text-neutral-700 transition-all duration-300 hover:scale-105 hover:shadow-glow border border-white/20"
+              >
+                + Add Language
+              </button>
+              <button
+                onClick={translate}
+                disabled={disabled}
+                className="px-8 py-3 bg-gradient-modern hover:shadow-glow disabled:opacity-50 disabled:cursor-not-allowed rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105 shadow-modern"
+              >
+                {disabled ? 'Translating...' : 'Translate'}
+              </button>
+            </div>
+
+            {(ready === false || progressItems.length > 0) && (
+              <div className="text-center space-y-6 py-8">
+                <div className="bg-white/20 rounded-2xl p-6 backdrop-blur-sm border border-white/20">
+                  {ready === false && (
+                    <p className="text-lg font-medium text-neutral-700 mb-4">
+                      Loading AI models... (this only happens once)
+                    </p>
+                  )}
+                  <div className="space-y-4">
+                    {progressItems.map((data, index) => (
+                      <div key={index} className="animate-slide-up">
+                        <ProgressBar text={data.file} percentage={data.progress} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
