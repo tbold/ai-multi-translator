@@ -50,7 +50,7 @@ export default function ProgressBar({ text, percentage }: ProgressBarProps) {
         </Typography>
         <div className="w-full bg-white/20 rounded-full h-2 mt-2">
           <div 
-            className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+            className="bg-primary-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${percentage}%` }}
           />
         </div>

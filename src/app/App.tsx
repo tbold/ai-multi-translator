@@ -150,13 +150,13 @@ export function App() {
     <div className="min-h-screen p-4 md:p-8 animate-fade-in">
       <div className="max-w-6xl mx-auto">
         <div className="glass-card rounded-3xl shadow-glass overflow-hidden animate-slide-up">
-          <div className="px-6 py-8 md:px-12 md:py-12 bg-gradient-to-r from-white/10 to-white/5">
+          <div className="px-6 py-8 md:px-12 md:py-12 bg-white/10">
             <div className="text-center space-y-6">
               <div className="flex items-center justify-center space-x-4">
-                <div className="p-3 rounded-2xl bg-gradient-modern">
+                <div className="p-3 rounded-2xl bg-primary-600">
                   <TranslateIcon className="text-white" style={{ fontSize: '2.5rem' }} />
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold gradient-text">
+                <h1 className="text-4xl md:text-5xl font-bold primary-text">
                   AI Multi-Translator
                 </h1>
               </div>
@@ -242,7 +242,7 @@ export function App() {
               <button
                 onClick={translate}
                 disabled={disabled}
-                className="px-8 py-3 bg-gradient-modern hover:shadow-glow disabled:opacity-50 disabled:cursor-not-allowed rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105 shadow-modern"
+                className="px-8 py-3 bg-primary-600 hover:bg-primary-700 hover:shadow-glow disabled:opacity-50 disabled:cursor-not-allowed rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105 shadow-modern"
               >
                 {disabled ? 'Translating...' : 'Translate'}
               </button>
